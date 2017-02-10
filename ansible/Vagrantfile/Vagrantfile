@@ -1,0 +1,37 @@
+VAGRANTFILE_API_VERSION = "2"
+
+nodes = ['pwd1']
+pwd_nodes = []
+subnet=1
+domain='pwd.local'
+nodes.each { |node_name|
+  (1..1).each {|n|
+    subnet += 1
+    pwd_nodes << {:hostname => "#{node_name}"}
+  }
+}
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/xenial64"
+  pwd_nodes.each do |node|
+    config.vm.define node[:hostname] do |node_config|
+      node_config.vm.host_name = "#{node[:hostname]}.#{domain}"
+      node_config.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "2048"]
+      end
+      if node[:hostname] == "pwd1"
+        node_config.vm.provision "ansible" do |ansible|
+          ansible.playbook = '../site.yml'
+          ansible.limit = "all"
+          ansible.groups = {
+            'pwd_hosts' => ["pwd1"],
+            'nodes:children' => ["pwd_hosts"]
+          }
+          ansible.extra_vars = {
+            #ansible_python_interpreter: "/usr/bin/python3"
+          }  
+        end
+      end
+    end
+  end
+end

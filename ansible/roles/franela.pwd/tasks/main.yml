@@ -1,0 +1,43 @@
+---
+# tasks file for franela.pwd
+
+- name: Upgrade distro
+  apt:
+    upgrade: dist
+
+- name: Install system tools
+  apt:
+    name: "{{ item }}"
+    state: latest
+    cache_valid_time: 3600
+    update_cache: yes
+  with_items:
+    - htop
+    - python-pip
+
+- name: Install pip packages
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - docker
+    - docker-compose
+
+- name: Activate kernel modules
+  modprobe:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - xt_ipvs
+    - overlay
+
+#- name: Init Swarm
+#  raw: "docker swarm init"
+
+- name: Pull repository
+  git:
+    repo: https://github.com/franela/play-with-docker.git
+    dest: /root/pwd/
+
+- name: Start docker service
+  docker_service:
+    project_src: /root/pwd
