@@ -1,3 +1,8 @@
 play-with-docker
 node_modules
 
+/.DS_Store
+/.vagrant
+/ansible/site.retry
+/ansible/Vagrantfile/.vagrant
+/ansible/Vagrantfile/ubuntu-xenial-16.04-cloudimg-console.log
