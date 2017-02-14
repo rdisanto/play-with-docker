@@ -36,7 +36,7 @@
     - overlay
 
 - name: Init Swarm
-  raw: "docker swarm init"
+  raw: "docker swarm init --advertise-addr=$(hostname -i)"
   ignore_errors: yes
 
 - name: Download franela dind docker image
