@@ -85,3 +85,30 @@
 
 - name: Start pwd service
   raw: cd /root/pwd && docker-compose up -d
+
+- set_fact:
+    public_ip: "{{ ansible_enp0s8.ipv4.address }}"
+- debug: var=public_ip
+
+- name: Clone franela.github.io
+  git:
+    repo: https://github.com/rdisanto/franela.github.io
+    dest: /root/franela.github.io/
+    force: yes
+
+- name: Replace exposed public ip in code
+  lineinfile:
+    dest: /root/franela.github.io/_layouts/default.html
+    regexp: 'pwd.newSession.*'
+    line: '      pwd.newSession([{selector: ".term1"}, {selector: ".term2"}],{baseUrl:"http://{{ public_ip }}",ports:"8080"});'
+
+- name: Create a data container
+  docker_container:
+    name: jekyll
+    image: jekyll/jekyll
+    volumes:
+      - /root/franela.github.io:/srv/jekyll
+    published_ports: 80:4000
+    command: jekyll serve
+    state: present
+    recreate: yes
