@@ -46,7 +46,7 @@
 
 - name: Pull repository
   git:
-    repo: https://github.com/franela/play-with-docker.git
+    repo: https://github.com/rdisanto/play-with-docker.git
     version: ansible
     dest: /root/pwd/
     force: yes
