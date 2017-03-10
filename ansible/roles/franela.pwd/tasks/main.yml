@@ -51,17 +51,23 @@
     dest: /root/pwd/
     force: yes
 
-- name: Download Golang 1.7
+- name: Download Golang 1.7.5
   get_url:
-    url: https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz
-    dest: /root/go1.7.linux-amd64.tar.gz
-    checksum: sha256:702ad90f705365227e902b42d91dd1a40e48ca7f67a2f4b2fd052aaa4295cd95
+    url: https://storage.googleapis.com/golang/go1.7.5.linux-amd64.tar.gz
+    dest: /root/go1.7.5.linux-amd64.tar.gz
+    checksum: sha256:2e4dd6c44f0693bef4e7b46cc701513d74c3cc44f2419bf519d7868b12931ac3
 
-- name: Extract Golang 1.7
+- name: Extract Golang 1.7.5
   unarchive:
-    src: /root/go1.7.linux-amd64.tar.gz
+    src: /root/go1.7.5.linux-amd64.tar.gz
     dest: /root/
     remote_src: True
+
+- name: Pull miekg dns go lib
+  git:
+    repo: https://github.com/miekg/dns.git
+    dest: /root/go/src/github.com/miekg/dns
+    force: yes
 
 - name: Link Golibs
   file:
@@ -103,7 +109,12 @@
     regexp: 'pwd.newSession.*'
     line: '      pwd.newSession([{selector: ".term1"}, {selector: ".term2"}],{baseUrl:"http://{{ public_ip }}",ports:"8080"});'
 
-- name: Create a data container
+- name: remove any markdown webserver container
+  docker_container:
+    name: jekyll
+    state: absent
+
+- name: Create the markdown webserver container
   docker_container:
     name: jekyll
     image: jekyll/jekyll
@@ -112,4 +123,3 @@
     published_ports: 80:4000
     command: jekyll serve
     state: present
-    recreate: yes
