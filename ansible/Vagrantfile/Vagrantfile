@@ -25,7 +25,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         node_config.vm.provision "ansible" do |ansible|
           ansible.playbook = '../site.yml'
           ansible.limit = "all"
-          ansible.verbose = "vvv"
+          #ansible.verbose = "vvv"
           ansible.groups = {
             'pwd_hosts' => ["pwd1"],
             'nodes:children' => ["pwd_hosts"]
