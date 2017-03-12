@@ -7,5 +7,5 @@
     - setup:
 
   roles:
-    - mongrelion.docker
+    #- mongrelion.docker
     - franela.pwd
