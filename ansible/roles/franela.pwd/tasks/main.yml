@@ -1,0 +1,125 @@
+---
+# tasks file for franela.pwd
+
+- name: Upgrade distro
+  apt:
+    upgrade: dist
+
+- name: Install system tools
+  apt:
+    name: "{{ item }}"
+    state: latest
+    cache_valid_time: 3600
+    update_cache: yes
+  with_items:
+    - htop
+    - python-pip
+
+- name: Install pip packages
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - docker-py
+
+- name: Download docker-compose binary
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.11.1/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
+
+- name: Activate kernel modules
+  modprobe:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - xt_ipvs
+    - overlay
+
+- name: Init Swarm
+  raw: "docker swarm init --advertise-addr=$(hostname -i)"
+  ignore_errors: yes
+
+- name: Download franela dind docker image
+  docker_image:
+    name: franela/dind
+    state: present
+
+- name: Pull repository
+  git:
+    repo: https://github.com/rdisanto/play-with-docker.git
+    version: ansible
+    dest: /root/pwd/
+    force: yes
+
+- name: Download Golang 1.7.5
+  get_url:
+    url: https://storage.googleapis.com/golang/go1.7.5.linux-amd64.tar.gz
+    dest: /root/go1.7.5.linux-amd64.tar.gz
+    checksum: sha256:2e4dd6c44f0693bef4e7b46cc701513d74c3cc44f2419bf519d7868b12931ac3
+
+- name: Extract Golang 1.7.5
+  unarchive:
+    src: /root/go1.7.5.linux-amd64.tar.gz
+    dest: /root/
+    remote_src: True
+
+- name: Pull miekg dns go lib
+  git:
+    repo: https://github.com/miekg/dns.git
+    dest: /root/go/src/github.com/miekg/dns
+    force: yes
+
+- name: Link Golibs
+  file:
+    src: /root/go
+    dest: /usr/local/go
+    state: link
+
+- name: Change PATH 
+  lineinfile:
+    dest: /root/.bashrc
+    state: present
+    line: 'export GOROOT=/usr/local/go export PATH=/usr/local/go/bin:$PATH export GOPATH=$HOME/go'
+
+- name: Go exec
+  raw: cd /root/pwd && export GOPATH=$HOME/go && /root/go/bin/go get -v -d -t ./...
+
+- name: Fix go exec path in docker-compose file
+  replace:
+    dest: /root/pwd/docker-compose.yml
+    regexp: '\$GOPATH'
+    replace: '/root/go'
+
+- name: Start pwd service
+  raw: cd /root/pwd && docker-compose up -d
+
+- set_fact:
+    public_ip: "{{ ansible_enp0s8.ipv4.address }}"
+- debug: var=public_ip
+
+- name: Clone play-with-docker.github.io.git for Orange
+  git:
+    repo: https://github.com/rdisanto/play-with-docker.github.io.git
+    dest: /root/play-with-docker.github.io/
+    force: yes
+
+- name: Replace exposed public ip in code
+  lineinfile:
+    dest: /root/play-with-docker.github.io/_layouts/post.html
+    regexp: 'pwd.newSession.*'
+    line: '      pwd.newSession([{selector: ".term1"}, {selector: ".term2"}, {selector: ".term3"}], {ImageName: "{% raw %}{{page.image}}{% endraw %}",baseUrl: "http://{{ public_ip }}:8080",ports: "8080"'
+
+- name: remove any markdown webserver container
+  docker_container:
+    name: jekyll
+    state: absent
+
+- name: Create the markdown webserver container
+  docker_container:
+    name: jekyll
+    image: jekyll/jekyll
+    volumes:
+      - /root/play-with-docker.github.io:/srv/jekyll
+    published_ports: 80:4000
+    command: jekyll serve
+    state: started
