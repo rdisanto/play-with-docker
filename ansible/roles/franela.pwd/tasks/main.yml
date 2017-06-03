@@ -41,8 +41,11 @@
 
 - name: Download franela dind docker image
   docker_image:
-    name: franela/dind
+    name: "{{ item }}"
     state: present
+  with_itmes:
+    - franela/dind
+    - franela/dind:overlay2-dev
 
 - name: Pull repository
   git:
