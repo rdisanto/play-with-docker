@@ -43,7 +43,7 @@
   docker_image:
     name: "{{ item }}"
     state: present
-  with_itmes:
+  with_items:
     - franela/dind
     - franela/dind:overlay2-dev
 
