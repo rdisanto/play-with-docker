@@ -110,7 +110,7 @@
   lineinfile:
     dest: /root/play-with-docker.github.io/_layouts/post.html
     regexp: 'pwd.newSession.*'
-    line: '      pwd.newSession([{selector: ".term1"}, {selector: ".term2"}, {selector: ".term3"}], {ImageName: "{% raw %}{{page.image}}{% endraw %}",baseUrl: "http://{{ public_ip }}:8080",ports: "8080"'
+    line: '      pwd.newSession([{selector: ".term1"}, {selector: ".term2"}, {selector: ".term3"}], {ImageName: "{% raw %}{{page.image}}{% endraw %}",baseUrl: "http://{{ public_ip }}.xip.io:8080",ports: "8080"'
 
 - name: remove any markdown webserver container
   docker_container:
