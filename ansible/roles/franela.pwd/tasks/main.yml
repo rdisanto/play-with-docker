@@ -45,12 +45,12 @@
     state: present
   with_items:
     - franela/dind
+    - franela/dind:overlay2
     - franela/dind:overlay2-dev
 
 - name: Pull repository
   git:
     repo: https://github.com/rdisanto/play-with-docker.git
-    #version: ansible
     dest: /root/pwd/
     force: yes
 
