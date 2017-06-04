@@ -16,7 +16,7 @@ import (
 	"github.com/docker/docker/api"
 	"github.com/docker/docker/client"
 	"github.com/googollee/go-socket.io"
-	"github.com/play-with-docker/play-with-docker/config"
+	"github.com/rdisanto/play-with-docker/config"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/twinj/uuid"
 )

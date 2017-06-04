@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"html/template"
 
-	"github.com/play-with-docker/play-with-docker/services"
+	"github.com/rdisanto/play-with-docker/services"
 )
 
 func GetWelcomeTemplate() ([]byte, error) {

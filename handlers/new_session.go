@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/play-with-docker/play-with-docker/config"
-	"github.com/play-with-docker/play-with-docker/services"
+	"github.com/rdisanto/play-with-docker/config"
+	"github.com/rdisanto/play-with-docker/services"
 )
 
 type NewSessionResponse struct {
