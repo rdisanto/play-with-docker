@@ -4,9 +4,9 @@ FROM golang:1.7
 COPY Dockerfile.run /go/bin/Dockerfile
 COPY ./www /go/bin/www
 
-COPY . /go/src/github.com/play-with-docker/play-with-docker
+COPY . /go/src/github.com/rdisanto/play-with-docker
 
-WORKDIR /go/src/github.com/play-with-docker/play-with-docker
+WORKDIR /go/src/github.com/rdisanto/play-with-docker
 
 RUN go get -v -d ./...
 
