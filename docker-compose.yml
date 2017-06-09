@@ -38,3 +38,10 @@ services:
             - $GOPATH/src:/go/src
         environment:
             GOOGLE_RECAPTCHA_DISABLED: "true"
+
+    jekyll:
+        container_name: jekyll
+        image: jekyll/jekyll
+        command: jekyll serve
+        volumes:
+            - /root/play-with-docker.github.io:/srv/jekyll
