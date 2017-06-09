@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/rdisanto/play-with-docker/services"
+	"github.com/play-with-docker/play-with-docker/services"
 )
 
 func GetInstanceImages(rw http.ResponseWriter, req *http.Request) {

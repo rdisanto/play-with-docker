@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/rdisanto/play-with-docker/services"
+	"github.com/play-with-docker/play-with-docker/services"
 )
 
 func GetSession(rw http.ResponseWriter, req *http.Request) {
