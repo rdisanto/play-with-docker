@@ -8,4 +8,4 @@
 
   roles:
     - mongrelion.docker
-    - franela.pwd
+    - play-with-docker

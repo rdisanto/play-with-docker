@@ -1,2 +1,5 @@
-play-with-docker
 node_modules
+
+ansible/Vagrantfile/
+ansible/site\.retry
+ansible/inventory/inventory\.yaml
