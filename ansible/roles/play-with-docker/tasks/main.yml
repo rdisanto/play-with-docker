@@ -1,52 +1,52 @@
 ---
-# tasks file for franela.pwd
+# tasks file for play-with-docker
 
-# - name: Upgrade distro
-#   apt:
-#     upgrade: dist
+- name: Upgrade distro
+  apt:
+    upgrade: dist
 
-# - name: Install system tools
-#   apt:
-#     name: "{{ item }}"
-#     state: latest
-#     cache_valid_time: 3600
-#     update_cache: yes
-#   with_items:
-#     - htop
-#     - python-pip
+- name: Install system tools
+  apt:
+    name: "{{ item }}"
+    state: latest
+    cache_valid_time: 3600
+    update_cache: yes
+  with_items:
+    - htop
+    - python-pip
 
-# - name: Install pip packages
-#   pip:
-#     name: "{{ item }}"
-#   with_items:
-#     - docker-py
+- name: Install pip packages
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - docker-py
 
-# - name: Download docker-compose binary
-#   get_url:
-#     url: https://github.com/docker/compose/releases/download/1.11.1/docker-compose-Linux-x86_64
-#     dest: /usr/local/bin/docker-compose
-#     mode: 0755
+- name: Download docker-compose binary
+  get_url:
+    url: https://github.com/docker/compose/releases/download/1.11.1/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
 
-# - name: Activate kernel modules
-#   modprobe:
-#     name: "{{item}}"
-#     state: present
-#   with_items:
-#     - xt_ipvs
-#     - overlay
+- name: Activate kernel modules
+  modprobe:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - xt_ipvs
+    - overlay
 
-# - name: Init Swarm
-#   raw: "docker swarm init --advertise-addr=$(hostname -i)"
-#   ignore_errors: yes
+- name: Init Swarm
+  raw: "docker swarm init --advertise-addr=$(hostname -i)"
+  ignore_errors: yes
 
-# - name: Download franela dind docker image
-#   docker_image:
-#     name: "{{ item }}"
-#     state: present
-#   with_items:
-#     - franela/dind
-#     - franela/dind:overlay2
-#     - franela/dind:overlay2-dev
+- name: Download franela dind docker image
+  docker_image:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - franela/dind
+    - franela/dind:overlay2
+    - franela/dind:overlay2-dev
 
 - name: Pull repository
   git:
